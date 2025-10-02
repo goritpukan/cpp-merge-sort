@@ -1,8 +1,10 @@
 #include <fstream>
 #include <iostream>
+#include <random>
+#include <sys/resource.h>
 #include <vector>
 
-#include "../include/merge/data_storage.h"
+#include "../include/merge/natural_merge_sort.h"
 #include "../include/merge/node.h"
 
 int getRandomNumber(int min, int max) {
@@ -10,38 +12,47 @@ int getRandomNumber(int min, int max) {
 }
 
 std::string getRandomString(const int length) {
-    const std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    std::string result;
-    result.reserve(length);
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_int_distribution<int> dist(0, 51);
 
-    for (int i = 0; i < length; i++) {
-        result += chars[rand() % chars.size()];
+    std::string s;
+    s.reserve(length);
+
+    for (size_t i = 0; i < length; i++) {
+        int r = dist(rng);
+        if (r < 26) {
+            s += static_cast<char>('A' + r);
+        } else {
+            s += static_cast<char>('a' + (r - 26));
+        }
     }
-    return result;
+    return s;
 }
 void generateRandomFile(const std::string filename, const int size) {
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_int_distribution<int> dist(0, 100000000);
+
     std::vector<Node> nodes;
     for (int i = 0; i < size; i++) {
-        nodes.emplace_back(getRandomNumber(0, 100000), getRandomString(getRandomNumber(0, 20)));
+        nodes.emplace_back(dist(rng), getRandomString(20));
     }
 
     std::ofstream out(filename, std::ios::binary);
-    if (!out) return;
-    size_t nodesSize = nodes.size();
+    if (!out) throw std::runtime_error("Cannot open file");
 
-    out.write(reinterpret_cast<const char*>(&nodesSize), sizeof(nodesSize));
     for (const auto& node : nodes) {
-        out.write(reinterpret_cast<const char*>(&node.key), sizeof(node.key));
-
-        size_t len = node.value.size();
-        out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-        out.write(node.value.data(), len);
+        out.write(reinterpret_cast<const char*>(&node), sizeof(Node));
     }
-    out.close();
 }
 int main() {
-    srand(time(0));
-    DataStorage ds("file.bin");
-    generateRandomFile("file.bin", 100); //50000000 +- = 1gb
+
+    NaturalMergeSort ms("file-1gb.bin");
+    ms.Sort();
+    //generateRandomFile("file-1gb.bin", 50000000); //50000000 +- = 1gb
+
+    struct rusage usage;
+    getrusage(RUSAGE_SELF, &usage);
+
+    std::cout << "Peak memory: " << usage.ru_maxrss / 1024.0 << " MB\n";
     return 0;
 }
