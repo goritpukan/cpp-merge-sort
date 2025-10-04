@@ -9,9 +9,13 @@ NaturalMergeSort::NaturalMergeSort(const std::string& filename) {
 
     Node n(0, "");
 
+    std::vector<int> temp;
+
     while (in.read(reinterpret_cast<char*>(&n), sizeof(Node))) {
+        temp.push_back(n.key);
         nodes.push_back(n);
     }
+    std::cout << temp.size() * sizeof(int) / 1024 / 1024 << "MB" << std::endl;
 }
 
 void NaturalMergeSort::PrintNodes() {

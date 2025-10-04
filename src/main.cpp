@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <unordered_set>
 #include <sys/resource.h>
 #include <vector>
 
@@ -32,7 +33,16 @@ void generateRandomFile(const std::string filename, const int size) {
     static std::mt19937 rng(std::random_device{}());
     static std::uniform_int_distribution<int> dist(0, 100000000);
 
+    std::unordered_set<int> keys;
     std::vector<Node> nodes;
+    nodes.reserve(size);
+
+    while (nodes.size() < size) {
+        int k = dist(rng);
+        if (keys.insert(k).second) {
+            nodes.emplace_back(k, getRandomString(20));
+        }
+    }
     for (int i = 0; i < size; i++) {
         nodes.emplace_back(dist(rng), getRandomString(20));
     }
@@ -48,7 +58,7 @@ int main() {
 
     NaturalMergeSort ms("file-1gb.bin");
     ms.Sort();
-    //generateRandomFile("file-1gb.bin", 50000000); //50000000 +- = 1gb
+    //generateRandomFile("file-50.bin", 50); //25000000 +- = 1gb
 
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);
