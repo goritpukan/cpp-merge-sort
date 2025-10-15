@@ -9,53 +9,65 @@ ExternalNaturalMergeSort::ExternalNaturalMergeSort(std::string filename) {
     this->filename = filename;
 }
 
-// void ExternalNaturalMergeSort::Merge() {
-//     WriteFileBuffer *input = new WriteFileBuffer(filename);
-//     ReadFileBuffer B("B");
-//     ReadFileBuffer C("C");
-//
-//     if (B.isEmpty()) {
-//         while (!C.isEmpty()) {
-//             input->Write(C.get());
-//         }
-//         delete input;
-//         return;
-//     }
-//     if (C.isEmpty()) {
-//         while (!B.isEmpty()) {
-//             input->Write(B.get());
-//         }
-//         delete input;
-//         return;
-//     }
-//
-//     Node prevBNode = B.get();
-//     Node prevCNode = C.get();
-//
-//     while (!B.isEmpty() && !C.isEmpty()) {
-//         if (prevBNode.key <= prevCNode.key) {
-//             input->Write(prevBNode);
-//             prevBNode = B.get();
-//         } else {
-//             input->Write(prevCNode);
-//             prevCNode = C.get();
-//         }
-//     }
-//
-//     if (B.isEmpty()) {
-//         input->Write(prevCNode);
-//         while (!C.isEmpty()) {
-//             input->Write(C.get());
-//         }
-//     } else {
-//         input->Write(prevBNode);
-//         while (!B.isEmpty()) {
-//             input->Write(B.get());
-//         }
-//     }
-//     delete input;
-// }
+void ExternalNaturalMergeSort::Merge() {
+    WriteFileBuffer *input = new WriteFileBuffer(filename);
+    ReadFileBuffer B("B");
+    ReadFileBuffer C("C");
 
+    Node prevBNode, currBNode;
+    Node prevCNode, currCNode;
+    std::vector<Node> runB;
+    std::vector<Node> runC;
+
+    if (!B.isEmpty()) prevBNode = B.get();
+    if (!C.isEmpty()) prevCNode = C.get();
+
+    while (!B.isEmpty() || !C.isEmpty()) {
+        if (!B.isEmpty()) {
+            runB.push_back(prevBNode);
+            while (!B.isEmpty()) {
+                currBNode = B.get();
+                if (currBNode.key < prevBNode.key) break;
+                runB.push_back(currBNode);
+                prevBNode = currBNode;
+            }
+        }
+
+        if (!C.isEmpty()) {
+            runC.push_back(prevCNode);
+            while (!C.isEmpty()) {
+                currCNode = C.get();
+                if (currCNode.key < prevCNode.key) break;
+                runC.push_back(currCNode);
+                prevCNode = currCNode;
+            }
+        }
+
+        size_t i = 0, j = 0;
+        while (i < runB.size() && j < runC.size()) {
+            if (runB[i].key <= runC[j].key) {
+                input->Write(runB[i++]);
+            } else {
+                input->Write(runC[j++]);
+            }
+        }
+
+        while (i < runB.size()) {
+            input->Write(runB[i++]);
+        }
+
+        while (j < runC.size()) {
+            input->Write(runC[j++]);
+        }
+
+        if (!B.isEmpty()) prevBNode = currBNode;
+        if (!C.isEmpty()) prevCNode = currCNode;
+        runB.clear();
+        runC.clear();
+    }
+
+    delete input;
+}
 
 void ExternalNaturalMergeSort::Sort() {
     Node currentNode;
@@ -94,17 +106,20 @@ void ExternalNaturalMergeSort::Sort() {
         delete B;
         delete C;
 
-        ReadFileBuffer b("B");
-        for (int i = 0; i < b.numNodes; i++) {
-            std::cout << b.get().key << std::endl;
-        }
+        // ReadFileBuffer b("B");
+        // for (int i = 0; i < b.numNodes; i++) {
+        //     std::cout << b.get().key << std::endl;
+        // }
+        //
+        // ReadFileBuffer c("C");
+        // for (int i = 0; i < c.numNodes; i++) {
+        //     std::cout << c.get().key << std::endl;
+        // }
+        // break;
 
-        ReadFileBuffer c("C");
-        for (int i = 0; i < c.numNodes; i++) {
-            std::cout << c.get().key << std::endl;
-        }
-        break;
-
-        // Merge();
+        Merge();
     }
+
+    std::remove("B");
+    std::remove("C");
 }

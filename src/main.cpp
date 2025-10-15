@@ -61,29 +61,42 @@ int main() {
 
     // NaturalMergeSort ms("file-1gb.bin");
     // ms.Sort();
-    generateRandomFile("file-10000.bin", 10000); //25000000 +- = 1gb
+    //generateRandomFile("file-25000000.bin", 25000000); //25000000 +- = 1gb
     //
-    WriteFileBuffer* testFile = new WriteFileBuffer("test-file.bin");
-    testFile->Write(Node(3, "a"));
-    testFile->Write(Node(7, "a"));
-    testFile->Write(Node(9, "a"));
-    testFile->Write(Node(4, "a"));
-    testFile->Write(Node(0, "a"));
-    testFile->Write(Node(1, "a"));
-    testFile->Write(Node(5, "a"));
-    testFile->Write(Node(2, "a"));
-    testFile->Write(Node(8, "a"));
-    testFile->Write(Node(6, "a"));
-    delete testFile;
+    // WriteFileBuffer* testFile = new WriteFileBuffer("file-10000.bin");
+    // testFile->Write(Node(3, "a"));
+    // testFile->Write(Node(7, "a"));
+    // testFile->Write(Node(9, "a"));
+    // testFile->Write(Node(4, "a"));
+    // testFile->Write(Node(0, "a"));
+    // testFile->Write(Node(1, "a"));
+    // testFile->Write(Node(5, "a"));
+    // testFile->Write(Node(2, "a"));
+    // testFile->Write(Node(8, "a"));
+    // testFile->Write(Node(6, "a"));
+    // delete testFile;
 
-    ExternalNaturalMergeSort sort("test-file.bin");
-    sort.Sort();
-    ReadFileBuffer input("test-file.bin");
+    ReadFileBuffer* before = new ReadFileBuffer("file-25000000.bin");
 
-    std::cout << "File A" << std::endl;
-    for (int i = 0; i < input.numNodes; i++) {
-        std::cout << input.get().key << std::endl;
-    }
+     std::cout << "After" << std::endl;
+     size_t count = 0;
+     bool isSorted = true;
+     Node prev = before->get();
+     Node curr;
+     for (int i = 1; i < before->numNodes; i++) {
+         count++;
+         curr = before->get();
+         if (prev.key > curr.key) {
+             isSorted = false;
+             break;
+         }
+         prev = curr;
+     }
+     std::cout << isSorted << std::endl;
+     delete before;
+
+    // ExternalNaturalMergeSort sort("file-25000000.bin");
+    // sort.Sort();
 
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);
