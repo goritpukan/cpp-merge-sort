@@ -5,9 +5,11 @@
 #include <sys/resource.h>
 #include <vector>
 
+#include "../include/merge/external_natural_merge_sort.h"
 #include "../include/merge/natural_merge_sort.h"
 #include "../include/merge/node.h"
 #include "../include/merge/read_file_buffer.h"
+#include "../include/merge/write_file_buffer.h"
 
 int getRandomNumber(int min, int max) {
     return rand() % (max + 1 - min) + min;
@@ -59,12 +61,28 @@ int main() {
 
     // NaturalMergeSort ms("file-1gb.bin");
     // ms.Sort();
-    //generateRandomFile("file-50000.bin", 50000); //25000000 +- = 1gb
+    generateRandomFile("file-10000.bin", 10000); //25000000 +- = 1gb
+    //
+    WriteFileBuffer* testFile = new WriteFileBuffer("test-file.bin");
+    testFile->Write(Node(3, "a"));
+    testFile->Write(Node(7, "a"));
+    testFile->Write(Node(9, "a"));
+    testFile->Write(Node(4, "a"));
+    testFile->Write(Node(0, "a"));
+    testFile->Write(Node(1, "a"));
+    testFile->Write(Node(5, "a"));
+    testFile->Write(Node(2, "a"));
+    testFile->Write(Node(8, "a"));
+    testFile->Write(Node(6, "a"));
+    delete testFile;
 
-    ReadFileBuffer file("file-50000.bin");
-    std::cout << file.numNodes << std::endl;
-    for (int i = 0; i < file.numNodes; i++) {
-        std::cout << file.get().key << std::endl;
+    ExternalNaturalMergeSort sort("test-file.bin");
+    sort.Sort();
+    ReadFileBuffer input("test-file.bin");
+
+    std::cout << "File A" << std::endl;
+    for (int i = 0; i < input.numNodes; i++) {
+        std::cout << input.get().key << std::endl;
     }
 
     struct rusage usage;

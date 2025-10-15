@@ -12,4 +12,6 @@ add_executable(merge src/main.cpp
         include/merge/read_file_buffer.h
         src/write_file_buffer.cpp
         include/merge/write_file_buffer.h
+        src/external_natural_merge_sort.cpp
+        include/merge/external_natural_merge_sort.h
 )

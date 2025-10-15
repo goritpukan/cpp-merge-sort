@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "node.h"
-#define BUFFER_SIZE 1000000
+#define BUFFER_SIZE 10000
 
 
 class ReadFileBuffer {
@@ -19,6 +19,7 @@ public:
  ReadFileBuffer(const std::string& filename);
  ~ReadFileBuffer();
  Node get();
+ bool isEmpty();
 };
 
 

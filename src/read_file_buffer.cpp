@@ -1,9 +1,10 @@
 #include "../include/merge/read_file_buffer.h"
 
 #include <fstream>
+#include <iostream>
 
 ReadFileBuffer::ReadFileBuffer(const std::string &filename) {
-    nodesBuffer.reserve(BUFFER_SIZE);
+    nodesBuffer.resize(BUFFER_SIZE);
     in.open(filename, std::ios::binary);
     if (!in.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);
@@ -11,7 +12,7 @@ ReadFileBuffer::ReadFileBuffer(const std::string &filename) {
     in.seekg(0, std::ios::end);
     std::size_t fileSize = in.tellg();
     in.seekg(0, std::ios::beg);
-    numNodes = fileSize / sizeof(Node) / 2;
+    numNodes = fileSize / sizeof(Node);
 }
 
 ReadFileBuffer::~ReadFileBuffer() {
@@ -28,4 +29,8 @@ Node ReadFileBuffer::get() {
         }
     }
     return nodesBuffer[count++];
+}
+
+bool ReadFileBuffer::isEmpty() {
+    return count >= nodesInBuffer && in.peek() == EOF;
 }
