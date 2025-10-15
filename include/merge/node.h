@@ -2,7 +2,6 @@
 #define MERGE_DATA_H
 #include <cstring>
 #include <stdexcept>
-
 struct Node {
     int key;
     char value[21];
@@ -15,6 +14,6 @@ struct Node {
         std::strncpy(this->value, value.c_str(), value.size());
         this->value[value.length()] = '\0';
     }
+    Node() = default;
 };
-
 #endif

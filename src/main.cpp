@@ -7,6 +7,7 @@
 
 #include "../include/merge/natural_merge_sort.h"
 #include "../include/merge/node.h"
+#include "../include/merge/read_file_buffer.h"
 
 int getRandomNumber(int min, int max) {
     return rand() % (max + 1 - min) + min;
@@ -56,9 +57,15 @@ void generateRandomFile(const std::string filename, const int size) {
 }
 int main() {
 
-    NaturalMergeSort ms("file-1gb.bin");
-    ms.Sort();
-    //generateRandomFile("file-50.bin", 50); //25000000 +- = 1gb
+    // NaturalMergeSort ms("file-1gb.bin");
+    // ms.Sort();
+    //generateRandomFile("file-50000.bin", 50000); //25000000 +- = 1gb
+
+    ReadFileBuffer file("file-50000.bin");
+    std::cout << file.numNodes << std::endl;
+    for (int i = 0; i < file.numNodes; i++) {
+        std::cout << file.get().key << std::endl;
+    }
 
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);

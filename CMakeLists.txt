@@ -8,4 +8,8 @@ add_executable(merge src/main.cpp
         include/merge/node.h
         include/merge/natural_merge_sort.h
         src/natural_merge_sort.cpp
+        src/read_file_buffer.cpp
+        include/merge/read_file_buffer.h
+        src/write_file_buffer.cpp
+        include/merge/write_file_buffer.h
 )
