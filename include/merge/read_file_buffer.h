@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "node.h"
-#define BUFFER_SIZE 100000
+#define BUFFER_SIZE 2000000
 
 
 class ReadFileBuffer {

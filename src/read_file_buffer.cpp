@@ -4,7 +4,7 @@
 #include <iostream>
 
 ReadFileBuffer::ReadFileBuffer(const std::string &filename) {
-    nodesBuffer.resize(BUFFER_SIZE);
+    nodesBuffer.reserve(BUFFER_SIZE);
     in.open(filename, std::ios::binary);
     if (!in.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);

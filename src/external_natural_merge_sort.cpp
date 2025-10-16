@@ -10,63 +10,52 @@ ExternalNaturalMergeSort::ExternalNaturalMergeSort(std::string filename) {
 }
 
 void ExternalNaturalMergeSort::Merge() {
-    WriteFileBuffer *input = new WriteFileBuffer(filename);
+    WriteFileBuffer *output = new WriteFileBuffer(filename);  // dynamic allocation kept
     ReadFileBuffer B("B");
     ReadFileBuffer C("C");
 
-    Node prevBNode, currBNode;
-    Node prevCNode, currCNode;
-    std::vector<Node> runB;
-    std::vector<Node> runC;
+    Node currBNode, currCNode;
+    bool hasB = !B.isEmpty();
+    bool hasC = !C.isEmpty();
 
-    if (!B.isEmpty()) prevBNode = B.get();
-    if (!C.isEmpty()) prevCNode = C.get();
+    if (hasB) currBNode = B.get();
+    if (hasC) currCNode = C.get();
 
-    while (!B.isEmpty() || !C.isEmpty()) {
-        if (!B.isEmpty()) {
-            runB.push_back(prevBNode);
-            while (!B.isEmpty()) {
-                currBNode = B.get();
-                if (currBNode.key < prevBNode.key) break;
-                runB.push_back(currBNode);
-                prevBNode = currBNode;
-            }
+    while (hasB || hasC) {
+        bool runEndB = false;
+        bool runEndC = false;
+
+        while ((!runEndB && hasB) || (!runEndC && hasC)) {
+            if (!runEndB && hasB &&
+                (!hasC || runEndC || currBNode.key <= currCNode.key)) {
+                output->Write(currBNode);
+
+                if (B.isEmpty()) {
+                    hasB = false;
+                    runEndB = true;
+                } else {
+                    Node next = B.get();
+                    if (next.key < currBNode.key)
+                        runEndB = true;
+                    currBNode = next;
+                }
+                } else if (!runEndC && hasC) {
+                    output->Write(currCNode);
+
+                    if (C.isEmpty()) {
+                        hasC = false;
+                        runEndC = true;
+                    } else {
+                        Node next = C.get();
+                        if (next.key < currCNode.key)
+                            runEndC = true;
+                        currCNode = next;
+                    }
+                }
         }
-
-        if (!C.isEmpty()) {
-            runC.push_back(prevCNode);
-            while (!C.isEmpty()) {
-                currCNode = C.get();
-                if (currCNode.key < prevCNode.key) break;
-                runC.push_back(currCNode);
-                prevCNode = currCNode;
-            }
-        }
-
-        size_t i = 0, j = 0;
-        while (i < runB.size() && j < runC.size()) {
-            if (runB[i].key <= runC[j].key) {
-                input->Write(runB[i++]);
-            } else {
-                input->Write(runC[j++]);
-            }
-        }
-
-        while (i < runB.size()) {
-            input->Write(runB[i++]);
-        }
-
-        while (j < runC.size()) {
-            input->Write(runC[j++]);
-        }
-
-        if (!B.isEmpty()) prevBNode = currBNode;
-        if (!C.isEmpty()) prevCNode = currCNode;
-        runB.clear();
-        runC.clear();
     }
 
-    delete input;
+    delete output;
 }
 
 void ExternalNaturalMergeSort::Sort() {

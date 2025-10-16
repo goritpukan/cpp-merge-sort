@@ -62,8 +62,8 @@ int main() {
     // NaturalMergeSort ms("file-1gb.bin");
     // ms.Sort();
     //generateRandomFile("file-25000000.bin", 25000000); //25000000 +- = 1gb
-    //
-    // WriteFileBuffer* testFile = new WriteFileBuffer("file-10000.bin");
+
+    // WriteFileBuffer* testFile = new WriteFileBuffer("file-10.bin");
     // testFile->Write(Node(3, "a"));
     // testFile->Write(Node(7, "a"));
     // testFile->Write(Node(9, "a"));
@@ -76,28 +76,35 @@ int main() {
     // testFile->Write(Node(6, "a"));
     // delete testFile;
 
-    ReadFileBuffer* before = new ReadFileBuffer("file-25000000.bin");
+    // ReadFileBuffer* before = new ReadFileBuffer("file-25000000.bin");
+    //
+    //  std::cout << "After" << std::endl;
+    //  size_t count = 0;
+    //  bool isSorted = true;
+    //  Node prev = before->get();
+    //  Node curr;
+    //  for (int i = 1; i < before->numNodes; i++) {
+    //      count++;
+    //      curr = before->get();
+    //      if (prev.key > curr.key) {
+    //          isSorted = false;
+    //          break;
+    //      }
+    //      prev = curr;
+    //  }
+    //  std::cout << isSorted << std::endl;
+    //  std::cout << before->numNodes << std::endl;
+    //  delete before;
 
-     std::cout << "After" << std::endl;
-     size_t count = 0;
-     bool isSorted = true;
-     Node prev = before->get();
-     Node curr;
-     for (int i = 1; i < before->numNodes; i++) {
-         count++;
-         curr = before->get();
-         if (prev.key > curr.key) {
-             isSorted = false;
-             break;
-         }
-         prev = curr;
-     }
-     std::cout << isSorted << std::endl;
-     delete before;
+    ExternalNaturalMergeSort sort("file-25000000.bin");
+    sort.Sort();
 
-    // ExternalNaturalMergeSort sort("file-25000000.bin");
-    // sort.Sort();
-
+    // ReadFileBuffer readFileBuffer("file-25000000.bin");
+    //
+    //  for (int i = 0; i < readFileBuffer.numNodes; ++i) {
+    //      std::cout << readFileBuffer.get().key << std::endl;
+    //  }
+    //  std::cout << readFileBuffer.numNodes <<std::endl;
     struct rusage usage;
     getrusage(RUSAGE_SELF, &usage);
 
