@@ -10,7 +10,7 @@ ExternalNaturalMergeSort::ExternalNaturalMergeSort(std::string filename) {
 }
 
 void ExternalNaturalMergeSort::Merge() {
-    WriteFileBuffer *output = new WriteFileBuffer(filename);  // dynamic allocation kept
+    WriteFileBuffer *output = new WriteFileBuffer(filename);
     ReadFileBuffer B("B");
     ReadFileBuffer C("C");
 
@@ -94,17 +94,6 @@ void ExternalNaturalMergeSort::Sort() {
         }
         delete B;
         delete C;
-
-        // ReadFileBuffer b("B");
-        // for (int i = 0; i < b.numNodes; i++) {
-        //     std::cout << b.get().key << std::endl;
-        // }
-        //
-        // ReadFileBuffer c("C");
-        // for (int i = 0; i < c.numNodes; i++) {
-        //     std::cout << c.get().key << std::endl;
-        // }
-        // break;
 
         Merge();
     }
